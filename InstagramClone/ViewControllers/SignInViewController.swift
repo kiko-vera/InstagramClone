@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import  Firebase
 
 class SignInViewController: UIViewController {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var signInButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,18 +39,35 @@ class SignInViewController: UIViewController {
         bottomBorderPassword.backgroundColor = UIColor(red: 50/255, green: 50/255, blue: 25/255, alpha: 1).cgColor
         passwordTextField.layer.masksToBounds = true
         passwordTextField.layer.addSublayer(bottomBorderPassword)
+        
+         handleTextField()
         // Do any additional setup after loading the view.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func handleTextField() {
+        emailTextField.addTarget(self, action: #selector(textFieldDidChange), for: UIControl.Event.editingChanged)
+        passwordTextField.addTarget(self, action: #selector(textFieldDidChange), for: UIControl.Event.editingChanged)
     }
-    */
+    
+    @objc func textFieldDidChange() {
+        guard let email = emailTextField.text, !email.isEmpty, let password = passwordTextField.text, !password.isEmpty else {
+            signInButton.setTitleColor(UIColor.lightText, for: .normal)
+            signInButton.isEnabled = false
+            return
+        }
+        
+        signInButton.isEnabled = true
+        signInButton.setTitleColor(UIColor.white, for: .normal)
+        
+    }
 
+    @IBAction func signInButton(_ sender: UIButton) {
+        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (authResult, error) in
+            guard let user = authResult?.user else { return }
+            
+            self.performSegue(withIdentifier: "SignInToHome", sender: nil)
+            
+        }
+    }
+    
 }
