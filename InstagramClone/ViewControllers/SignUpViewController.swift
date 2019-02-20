@@ -10,6 +10,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import ProgressHUD
 
 class SignUpViewController: UIViewController {
 
@@ -64,8 +65,15 @@ class SignUpViewController: UIViewController {
         passwordTextField.layer.masksToBounds = true
         passwordTextField.layer.addSublayer(bottomBorderPassword)
         
+        //disable signup button on launch
+        signUpButton.isEnabled = false
+        
         handleTextField()
         // Do any additional setup after loading the view.
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
     
     func handleTextField() {
@@ -91,36 +99,21 @@ class SignUpViewController: UIViewController {
     }
     
     @IBAction func signUpButton_TouchUpInside(_ sender: UIButton) {
-        Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) {
-            (authResult, error) in
-            guard let user = authResult?.user else { return }
-            
-            let uid = user.uid
-            let storageRef = Storage.storage().reference().child("profile_image").child(uid)
-            
-            if let profileImage = self.selectedImage, let imageData = profileImage.jpegData(compressionQuality: 0.1) {
-                storageRef.putData(imageData, metadata: nil, completion: { (metadata, error) in
-                    if error != nil {
-                        return
-                    }
-                    
-                    let profileImageURL = metadata?.name
-                    self.setUserInformation(profileImageURL: profileImageURL!, username: self.usernameTextField.text!, email: self.emailTextField.text!, uid: uid)
-                    self.performSegue(withIdentifier: "SignUpToHome", sender: nil)
-                })
-            }
-            
+        view.endEditing(true)
+        ProgressHUD.show("Waiting...", interaction: false)
+        if let profileImage = self.selectedImage, let imageData = profileImage.jpegData(compressionQuality: 0.1) {
+            AuthService.signUp(username: usernameTextField.text!, email: emailTextField.text!, password: passwordTextField.text!, imageData: imageData, onSuccess: {
+                ProgressHUD.showSuccess("Success!")
+                self.performSegue(withIdentifier: "SignUpToHome", sender: nil)
+            }, onError: { error in
+//                print(error!)
+                ProgressHUD.showError(error!)
+            })
+        } else {
+            ProgressHUD.showError("Profile image can't be empty.")
+            print("Profile Image can't be empty")
         }
     }
-    
-    func setUserInformation(profileImageURL: String, username: String, email: String, uid: String) {
-        let ref = Database.database().reference()
-        let usersReference = ref.child("users")
-        let newUserReference = usersReference.child(uid)
-        newUserReference.setValue(["username": self.usernameTextField.text!, "email": self.emailTextField.text!, "profile_image_URL": profileImageURL])
-    }
-    
-    
     
     @objc func handleSelectedProfileImage() {
         print("Tapped.")
@@ -128,8 +121,6 @@ class SignUpViewController: UIViewController {
         pickerController.delegate = self
         present(pickerController, animated: true, completion: nil)
     }
-    
-
 }
 
 extension SignUpViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

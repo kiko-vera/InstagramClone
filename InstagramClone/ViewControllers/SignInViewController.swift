@@ -8,6 +8,7 @@
 
 import UIKit
 import  Firebase
+import ProgressHUD
 
 class SignInViewController: UIViewController {
 
@@ -40,8 +41,22 @@ class SignInViewController: UIViewController {
         passwordTextField.layer.masksToBounds = true
         passwordTextField.layer.addSublayer(bottomBorderPassword)
         
-         handleTextField()
+        //disable sign in button until launch
+        signInButton.isEnabled = false
+        
+        handleTextField()
         // Do any additional setup after loading the view.
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        if Auth.auth().currentUser != nil {
+            self.performSegue(withIdentifier: "SignInToHome", sender: nil)
+        }
     }
     
     func handleTextField() {
@@ -62,12 +77,15 @@ class SignInViewController: UIViewController {
     }
 
     @IBAction func signInButton(_ sender: UIButton) {
-        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (authResult, error) in
-            guard let user = authResult?.user else { return }
-            
+        view.endEditing(true)
+        ProgressHUD.show("Waiting...", interaction: false)
+        AuthService.signIn(email: emailTextField.text!, password: passwordTextField.text!, onSuccess: {
+            ProgressHUD.showSuccess("Success!")
             self.performSegue(withIdentifier: "SignInToHome", sender: nil)
-            
-        }
+        }, onError: { error in
+            ProgressHUD.showError(error!)
+//            print(error!)
+        })
     }
     
 }

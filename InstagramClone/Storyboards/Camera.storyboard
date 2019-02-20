@@ -17,10 +17,76 @@
                     <view key="view" contentMode="scaleToFill" id="myd-ut-6ae">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yR6-TH-78F">
+                                <rect key="frame" x="0.0" y="64" width="375" height="100"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder-photo" translatesAutoresizingMaskIntoConstraints="NO" id="qcd-Wr-Tc8">
+                                        <rect key="frame" x="8" y="10" width="80" height="80"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="0p0-eG-IHZ"/>
+                                            <constraint firstAttribute="height" constant="80" id="WGH-SM-iaY"/>
+                                        </constraints>
+                                    </imageView>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xa8-EM-Dvo">
+                                        <rect key="frame" x="96" y="10" width="271" height="80"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="xa8-EM-Dvo" secondAttribute="trailing" constant="8" id="ABc-KV-LJV"/>
+                                    <constraint firstAttribute="bottom" secondItem="xa8-EM-Dvo" secondAttribute="bottom" constant="10" id="Ohh-dD-EFr"/>
+                                    <constraint firstAttribute="bottom" secondItem="qcd-Wr-Tc8" secondAttribute="bottom" constant="10" id="OvP-IX-hXV"/>
+                                    <constraint firstAttribute="height" constant="100" id="Vl2-lu-iaX"/>
+                                    <constraint firstItem="qcd-Wr-Tc8" firstAttribute="top" secondItem="yR6-TH-78F" secondAttribute="top" constant="10" id="YmR-OD-my1"/>
+                                    <constraint firstItem="qcd-Wr-Tc8" firstAttribute="leading" secondItem="yR6-TH-78F" secondAttribute="leading" constant="8" id="hRP-bd-5U7"/>
+                                    <constraint firstItem="xa8-EM-Dvo" firstAttribute="leading" secondItem="qcd-Wr-Tc8" secondAttribute="trailing" constant="8" id="pes-Dd-ksm"/>
+                                    <constraint firstItem="xa8-EM-Dvo" firstAttribute="top" secondItem="yR6-TH-78F" secondAttribute="top" constant="10" id="rwF-0B-ao0"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6U6-dC-seQ">
+                                <rect key="frame" x="8" y="609" width="359" height="50"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="IJm-ey-DRD"/>
+                                </constraints>
+                                <state key="normal" title="Share">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="shareButtonPressed:" destination="3c5-5m-uSL" eventType="touchUpInside" id="iFP-ux-uts"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.92706336275644163" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="yR6-TH-78F" firstAttribute="trailing" secondItem="rOi-Se-jna" secondAttribute="trailing" id="2RB-Oa-5cW"/>
+                            <constraint firstItem="6U6-dC-seQ" firstAttribute="leading" secondItem="rOi-Se-jna" secondAttribute="leading" constant="8" id="2z8-op-QpW"/>
+                            <constraint firstItem="yR6-TH-78F" firstAttribute="leading" secondItem="rOi-Se-jna" secondAttribute="leading" id="3ZJ-OW-VkA"/>
+                            <constraint firstItem="yR6-TH-78F" firstAttribute="top" secondItem="rOi-Se-jna" secondAttribute="top" id="DCn-f4-x8U"/>
+                            <constraint firstItem="rOi-Se-jna" firstAttribute="trailing" secondItem="6U6-dC-seQ" secondAttribute="trailing" constant="8" id="eKS-Ph-Bp6"/>
+                            <constraint firstItem="rOi-Se-jna" firstAttribute="bottom" secondItem="6U6-dC-seQ" secondAttribute="bottom" constant="8" id="f30-MU-WTg"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="rOi-Se-jna"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Camera" id="yAN-W0-d8L"/>
+                    <navigationItem key="navigationItem" title="Camera" id="yAN-W0-d8L">
+                        <barButtonItem key="leftBarButtonItem" title="Clear" id="0yB-s8-A3Z">
+                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <connections>
+                                <action selector="clearPostButtonPressed:" destination="3c5-5m-uSL" id="S5x-EX-6bw"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="captionTextView" destination="xa8-EM-Dvo" id="kwp-6j-B0B"/>
+                        <outlet property="clearPostButton" destination="0yB-s8-A3Z" id="XEA-8C-Xs4"/>
+                        <outlet property="photo" destination="qcd-Wr-Tc8" id="gHP-dQ-JU4"/>
+                        <outlet property="shareButton" destination="6U6-dC-seQ" id="VXV-hP-Dv0"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qlr-iy-DAS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -39,6 +105,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="BgB-kH-M4d">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="3c5-5m-uSL" kind="relationship" relationship="rootViewController" id="ux8-Tv-y0J"/>
                     </connections>
@@ -50,5 +119,6 @@
     </scenes>
     <resources>
         <image name="Photo" width="22" height="23"/>
+        <image name="placeholder-photo" width="840" height="600"/>
     </resources>
 </document>
