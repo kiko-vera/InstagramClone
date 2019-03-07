@@ -8,24 +8,44 @@
 
 import UIKit
 import Firebase
+import SDWebImage
 
 class HomeViewController: UIViewController {
 
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     var posts = [Post]()
-    
+    var users = [User]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.estimatedRowHeight = 520
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.dataSource = self
+        
+        activityIndicatorView.hidesWhenStopped = true
         loadPosts()
     }
     
     func loadPosts() {
+        activityIndicatorView.startAnimating()
         Database.database().reference().child("posts").observe(.childAdded) { (snapshot) in
             if let dict = snapshot.value as? [String: Any] {
                 let newPost = Post.transformPostPhoto(dict: dict)
-                self.posts.append(newPost)
-                self.tableView.reloadData()
+                self.fetchUser(uid: newPost.uid!, completed: {
+                    self.posts.append(newPost)
+                    self.activityIndicatorView.stopAnimating()
+                    self.tableView.reloadData()
+                })
+            }
+        }
+    }
+    
+    func fetchUser(uid: String, completed: @escaping () -> Void) {
+        Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+            if let dict = snapshot.value as? [String: Any] {
+                let user = User.transformUser(dict: dict)
+                self.users.append(user)
+                completed()
             }
         }
     }
@@ -51,8 +71,9 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
-        cell.textLabel?.text = posts[indexPath.row].caption
+        let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomePostsTableViewCell
+        cell.post = posts[indexPath.row]
+        cell.user = users[indexPath.row]
         return cell
     }
     
